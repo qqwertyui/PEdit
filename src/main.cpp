@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
       return Status::OK;
     }
     if (vm.count("version") > 0) {
-      spdlog::info("PEedit version {}.{}", Version::MAJOR, Version::MINOR);
+      spdlog::info("PEdit version {}.{}", Version::MAJOR, Version::MINOR);
       return Status::OK;
     }
     if (vm.count("input") == 0) {
