@@ -10,8 +10,10 @@ PEdit can manipulate PE file sections e.g. add, remove, show or change their con
 ## 1. BUILD
 Requirements:
 To be able to build this project you need to have working Boost.Build module installed (https://www.boost.org/doc/libs/1_62_0/more/getting_started/windows.html#id27), so:
-- Boost.Build
 - g++ with c++17 support 
+- Boost.Build
+- Boost.Program_options
+- spdlog
 You need to change your compiler version in Jamfile:1; it can be found by "g++ --version", e.g:
 g++.exe (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0 <---
                                                             -----
