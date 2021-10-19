@@ -482,8 +482,7 @@ void Section::hexdump() const {
   puts("");
 }
 
-void Section::filedump(const std::string &base) const {
-  std::string filename = std::string(base).append((char *)this->header.Name);
+void Section::filedump(const std::string &filename) const {
   std::ofstream file(filename, std::ofstream::binary);
   if (file.good() == false) {
     throw std::runtime_error("File error");

@@ -23,14 +23,14 @@ constexpr int INVALID_OPERATION = 4;
 
 int main(int argc, char **argv) {
   spdlog::set_pattern("[%^%l%$] %v");
-  std::string input_file, output_file, section_name, operation, type,
+  std::string input_file, output_file, section_name, operation, dump_type,
       section_file;
   int section_size = -1;
   try {
     /*
     Assign default values
     */
-    type = "hex";
+    dump_type = "hex";
     operation = "list";
 
     po::options_description desc("Avalible options");
@@ -39,9 +39,9 @@ int main(int argc, char **argv) {
         "input file")("output", po::value<std::string>(), "output file")(
         "section", po::value<std::string>(),
         "section name")("operation", po::value<std::string>(),
-                        "extract, add, remove, resize, set, list")(
+                        "dump, add, remove, resize, set, list")(
         "size", po::value<int>(),
-        "section size")("type", po::value<std::string>(), "file, hex")(
+        "section size")("dump_type", po::value<std::string>(), "file, hex")(
         "section_file", po::value<std::string>(),
         "section input")("version", "print application version");
 
@@ -74,8 +74,8 @@ int main(int argc, char **argv) {
     if (vm.count("output") > 0) {
       output_file = vm["output"].as<std::string>();
     }
-    if (vm.count("type") > 0) {
-      type = vm["type"].as<std::string>();
+    if (vm.count("dump_type") > 0) {
+      dump_type = vm["dump_type"].as<std::string>();
     }
     if (vm.count("size") > 0) {
       section_size = vm["size"].as<int>();
@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
   }
 
   bool section_name_required = false;
-  std::array<std::string, 4> requires_section_name = {"extract", "remove",
+  std::array<std::string, 4> requires_section_name = {"dump", "remove",
                                                       "resize", "set"};
   for (std::string &op : requires_section_name) {
     if (op.compare(operation) == 0) {
@@ -133,13 +133,17 @@ int main(int argc, char **argv) {
     }
   }
 
-  if (operation.compare("extract") == 0) {
-    if (type.compare("hex") == 0) {
+  if (operation.compare("dump") == 0) {
+    if (dump_type.compare("hex") == 0) {
       s->hexdump();
-    } else if (type.compare("file") == 0) {
-      s->filedump(input_file);
+    } else if (dump_type.compare("file") == 0) {
+      if(output_file.compare(input_file) == 0) {
+        spdlog::error("--output is required");
+        return Status::MISSING_ARGS;
+      }
+      s->filedump(output_file);
     } else {
-      spdlog::error("Invalid --type value");
+      spdlog::error("Invalid --dump_type value");
     }
     return Status::OK;
   } else if (operation.compare("remove") == 0) {
