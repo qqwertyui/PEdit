@@ -1,0 +1,10 @@
+using gcc : 8.1.0 : : <cxxflags>"-Wall -Wextra -std=c++17" ;
+
+lib imagehlp : : <name>imagehlp ;
+lib program_options : : <name>boost_program_options ;
+lib spdlog : : <name>spdlog ;
+
+exe pedit 
+  : [ glob src/*.cpp ] imagehlp program_options spdlog
+  : <include>include
+  ;
