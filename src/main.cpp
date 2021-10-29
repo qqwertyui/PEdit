@@ -1,17 +1,12 @@
-#include <array>
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <spdlog/spdlog.h>
 
 #include "PE.hpp"
+#include "Version.hpp"
 #include "Utils.hpp"
 
 namespace po = boost::program_options;
-
-namespace Version {
-constexpr int MAJOR = 0;
-constexpr int MINOR = 1;
-} // namespace Version
 
 namespace Status {
 constexpr int OK = 0;
@@ -160,7 +155,7 @@ int main(int argc, char **argv) {
       return Status::PE_ERROR;
     }
   } else if (operation.compare("set") == 0) {
-    // TODO: implement set options
+    // TODO: implement set option
   } else if (operation.compare("add") == 0) {
     if (section_file.empty()) {
       spdlog::error("--section_file <path> is required");
@@ -194,6 +189,6 @@ int main(int argc, char **argv) {
     return Status::PE_ERROR;
   }
 
-  spdlog::info("Ok");
+  spdlog::info("ok");
   return Status::OK;
 }

@@ -1,7 +1,6 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-#include <cstddef>
 #include <string>
 #include <vector>
 

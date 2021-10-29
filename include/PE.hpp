@@ -1,15 +1,5 @@
-/*
-
-        PE file class, which includes some basic methods
-        to manage the content of those files.
-
-
-        To work, must be linked along with 'libimagehlp.a', e.g.
-        g++ <your_file>.cpp PE.cpp -limagehlp
-
-*/
-#ifndef PE_H
-#define PE_H
+#ifndef PE_HPP
+#define PE_HPP
 
 #include <windows.h>
 #include <winnt.h>
@@ -21,28 +11,56 @@
 
 class PE;
 
+/**
+ * @brief 
+ * This class represents single PE file section.
+ * It contains both header and the content of the section.
+ */
 class Section {
 public:
   IMAGE_SECTION_HEADER header;
   std::vector<BYTE> code;
 
+  /**
+   * @brief 
+   * Prints hexdump of section.
+   */
   void hexdump() const;
+  /**
+   * @brief 
+   * Writes section body into given filename.
+   * @param[in] filename 
+   * Output filename.
+   */
   void filedump(const std::string &filename) const;
 
 private:
   void resize(size_t new_size);
-
   friend class PE;
 };
 
+/**
+ * @brief 
+ * Represents DOS header and the code it contains.
+ */
 class Image_Dos {
 public:
   IMAGE_DOS_HEADER dosHeader;
   std::vector<BYTE> code;
 };
 
+/**
+ * @brief 
+ * Represents PE (Portable Executable) file
+ */
 class PE {
 public:
+  /**
+   * @brief 
+   * Represents application type, e.g.
+   * GUI -> Graphical application
+   * CUI -> Console application
+   */
   enum Subsystem {
     UNKNOWN = IMAGE_SUBSYSTEM_UNKNOWN,
     NATIVE = IMAGE_SUBSYSTEM_NATIVE,
@@ -50,20 +68,94 @@ public:
     CUI = IMAGE_SUBSYSTEM_WINDOWS_CUI
   };
 
+  /**
+   * @brief Construct a new PE object
+   * 
+   * @param[in] application_type Output application type
+   */
   explicit PE(PE::Subsystem application_type);
+
+  /**
+   * @brief Load existing PE file into memory
+   * 
+   * @param[in] filename Path to executable
+   */
   explicit PE(const std::string &filename);
   ~PE();
 
+  /**
+   * @brief Checks section existence
+   * 
+   * @param[in] section Pointer to existing Section* object
+   * @return true if section exists
+   * @return false otherwise
+   */
   bool section_exists(const Section *section) const;
+
+  /**
+   * @brief Gets the section by its name
+   * 
+   * @param[in] name Section name 
+   * @return Section* object if section was found, nullptr otherwise
+   */
   Section *get_section_by_name(std::string name) const;
+
+  /**
+   * @brief Add new section
+   * 
+   * @param section_name New section name
+   * @param[in] data Section contents
+   * @return newly created Section* in case of success, or pointer to existing Section* 
+   * object if given section_name existed before, in both cases it overwrites
+   * section content
+   */
   Section *add_section(std::string section_name,
                        std::vector<unsigned char> &data);
+
+  /**
+   * @brief Removes section
+   * 
+   * @param[in] section Pointer to existing Section* object
+   * @note If section is nullptr the function does nothing
+   */
   void remove_section(Section *section);
+
+  /**
+   * @brief Overwrites existing section contents
+   * 
+   * @param[in] section Pointer to existing Section* object
+   * @param[in] data Data that will be written
+   * @note If section is nullptr the function does nothing
+   */
   void write_section(Section *section, std::vector<unsigned char> &data);
+
+  /**
+   * @brief Set the program enty point
+   * 
+   * @param[in] section Section in which the entry point is to be set
+   * @param[in] offset Offset in the given section
+   * @note If section is nullptr the function does nothing
+   */
   void set_entry_point(Section *section, size_t offset);
+
+  /**
+   * @brief Resizes section body
+   * 
+   * @param[in] section Section in which the size is to be changed
+   * @param[in] new_size New section size
+   */
   void resize_section(Section *section, size_t new_size);
+
+  /**
+   * @brief Returns std::vector which contain section names
+   */
   std::vector<std::string> get_section_names() const;
 
+  /**
+   * @brief Dumps contents of PE file onto disk
+   * 
+   * @param[in] name Output file name 
+   */
   void dump(const std::string &name);
 
 private:
@@ -101,6 +193,6 @@ private:
   friend class Section;
 };
 
-typedef std::vector<Section *>::iterator Section_Iterator;
+typedef std::vector<Section*>::iterator Section_Iterator;
 
 #endif

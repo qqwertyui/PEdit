@@ -47,3 +47,7 @@ The output binary can be found at %REPOSITORY_ROOT%/bin/gcc-%COMPILER_VERSION%/r
 
 #### Extract .rsrc section to file
 ./pedit --input sample.exe --operation dump --section ".rsrc" --dump_type file --output rsrc_section.blob
+
+#### Documentation generation 
+doxygen 
+##### Output can be found int ./doc

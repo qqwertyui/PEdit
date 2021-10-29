@@ -1,4 +1,5 @@
 using gcc : 8.1.0 : : <cxxflags>"-Wall -Wextra -std=c++17" ;
+using doxygen : ;
 
 lib imagehlp : : <name>imagehlp ;
 lib program_options : : <name>boost_program_options ;

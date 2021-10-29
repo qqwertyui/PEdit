@@ -443,8 +443,10 @@ size_t PE::section_to_rva(Section *section) {
 }
 
 void PE::set_entry_point(Section *section, size_t offset) {
-  this->ntHeader.OptionalHeader.AddressOfEntryPoint =
+  if(section) {
+    this->ntHeader.OptionalHeader.AddressOfEntryPoint =
       PE::section_to_rva(section) + offset;
+  }
 }
 
 void Section::resize(size_t new_size) {
